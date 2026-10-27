@@ -2,12 +2,13 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'my_new_project'
+name: 'nyc_analytics'
 version: '1.0.0'
 config-version: 2
 
-# This setting configures which "profile" dbt uses for this project.
+# Some default settings for dbt
 profile: 'default'
+
 
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
@@ -19,10 +20,12 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
-target-path: "target"  # directory which will store compiled SQL files
-clean-targets:         # directories to be removed by `dbt clean`
-  - "target"
-  - "dbt_packages"
+
+target-path: "target"
+clean-targets:
+ - "target"
+ - "dbt_packages"
+
 
 
 # Configuring models
@@ -35,8 +38,26 @@ clean-targets:         # directories to be removed by `dbt clean`
 # continue to be built as views. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 
+# Set up models, which are basically SQL files, to create tables
 models:
-  my_new_project:
-    # Applies to all files under models/example/
-    example:
-      +materialized: table
+ nyc_analytics:
+   +materialized: table
+
+   assignment_work:
+     staging:
+       +materialized: table
+       +schema: nyc_homework_staging
+
+     marts:
+       +materialized: table
+       +schema: nyc_homework_warehouse_marts
+      
+       conformed:
+         +materialized: table
+
+       dob_job_filings:
+         +materialized: table
+
+       dot_311:
+         +materialized: table
+
