@@ -33,7 +33,7 @@ cleaned AS (
        ),
 
        -- Identifiers
-       CAST(job-filing_number AS STRING) AS filing_number,
+       CAST(job_filing_number AS STRING) AS filing_number,
 
        -- Date/Time
        CAST(filing_date AS TIMESTAMP) AS filing_date,
