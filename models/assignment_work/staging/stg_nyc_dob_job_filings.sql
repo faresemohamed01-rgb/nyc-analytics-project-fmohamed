@@ -33,7 +33,7 @@ cleaned AS (
        ),
 
        -- Identifiers
-       CAST(job_filing_number AS STRING) AS filing_number,
+       CAST(job_filing_number AS STRING) AS job_filing_number,
 
        -- Date/Time
        CAST(filing_date AS TIMESTAMP) AS filing_date,
@@ -83,7 +83,7 @@ cleaned AS (
    FROM source
 
    -- Filters
-   WHERE filing_number IS NOT NULL
+   WHERE job_filing_number IS NOT NULL
    AND filing_date IS NOT NULL
    AND CAST(filing_date AS DATE) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 YEAR)
    AND borough IS NOT NULL
