@@ -74,9 +74,6 @@ cleaned AS (
        CAST(latitude AS DECIMAL) AS latitude,
        CAST(longitude AS DECIMAL) AS longitude,
 
-       -- Clearer column name as well for this one
-       CAST(open_data_channel_type AS STRING) AS method_of_submission,
-
        -- Metadata
        CURRENT_TIMESTAMP() AS _stg_loaded_at
 
@@ -89,7 +86,7 @@ cleaned AS (
    AND borough IS NOT NULL
 
    -- Deduplicate
-   QUALIFY ROW_NUMBER() OVER (PARTITION BY unique_key ORDER BY created_date DESC) = 1
+   QUALIFY ROW_NUMBER() OVER (PARTITION BY job_filing_number ORDER BY filing_date DESC) = 1
 )
 
 SELECT * FROM cleaned
