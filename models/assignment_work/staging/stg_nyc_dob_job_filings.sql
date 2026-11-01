@@ -51,8 +51,8 @@ cleaned AS (
        CASE
            WHEN UPPER(TRIM(CAST(postcode AS STRING))) IN ('N/A', 'NA') THEN NULL
            WHEN UPPER(TRIM(CAST(postcode AS STRING))) = 'ANONYMOUS' THEN 'Anonymous'
-           WHEN LENGTH(CAST(postcode AS STRING)) = 5 THEN CAST(incident_zip AS STRING)
-           WHEN LENGTH(CAST(postcode AS STRING)) = 9 THEN CAST(incident_zip AS STRING)
+           WHEN LENGTH(CAST(postcode AS STRING)) = 5 THEN CAST(postcode AS STRING)
+           WHEN LENGTH(CAST(postcode AS STRING)) = 9 THEN CAST(postcode AS STRING)
            WHEN LENGTH(CAST(postcode AS STRING)) = 10
                AND REGEXP_CONTAINS(CAST(postcode AS STRING), r'^\d{5}-\d{4}')
            THEN CAST(postcode AS STRING)
