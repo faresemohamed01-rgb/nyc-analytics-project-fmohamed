@@ -17,7 +17,7 @@ cleaned AS (
            current_status_date, 
            approved_date, 
            signoff_date,
-           first_permit_date
+           first_permit_date,
         --applicant_info and job_description
            applicant_license,
            applicant_first_name,
