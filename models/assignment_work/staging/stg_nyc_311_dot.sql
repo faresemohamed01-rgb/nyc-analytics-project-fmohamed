@@ -53,7 +53,7 @@ cleaned AS (
                AND REGEXP_CONTAINS(CAST(incident_zip AS STRING), r'^\d{5}-\d{4}')
            THEN CAST(incident_zip AS STRING)
            ELSE NULL
-       END AS zip,
+       END AS zipcode,
 
        -- Location - standardized borough, just in case
        CASE
