@@ -32,7 +32,7 @@ all_dates AS (
 
     UNION DISTINCT
 
-    SELECT DISTINCT CAST(current_status_date AS DATE) AS full_date
+    SELECT DISTINCT CAST(status_date AS DATE) AS full_date
     FROM stg_dob
     WHERE current_status_date IS NOT NULL
 
