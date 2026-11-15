@@ -18,10 +18,7 @@ stg_litigation AS (
 all_locations AS (
 
     SELECT DISTINCT
-        borough, council_district, zip, incident_address,
-        bbl,
-        community_board, 
-        latitude, 
+        borough, council_district, zip,
         longitude
     FROM stg_311
     WHERE borough IS NOT NULL
@@ -31,11 +28,7 @@ all_locations AS (
     UNION DISTINCT
 
     SELECT DISTINCT
-        borough, council_district, zip, incident_address,
-        bbl,
-        community_district as community_board, 
-        latitude, 
-        longitude
+        borough, council_district, zip, 
     FROM stg_litigation
     WHERE borough IS NOT NULL
        OR council_district IS NOT NULL
@@ -50,6 +43,9 @@ location_dimension AS (
             'borough', 'council_district', 'zip'
         ]) }} AS location_key,
 
+        borough, 
+        council_district, 
+        zip, 
         incident_address,
         bbl,
         community_board, 
