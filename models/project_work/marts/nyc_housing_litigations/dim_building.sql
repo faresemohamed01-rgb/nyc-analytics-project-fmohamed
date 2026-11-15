@@ -23,7 +23,7 @@ enriched AS (
 
 ),
 
-dim_complaint_type AS (
+dim_building AS (
 
     SELECT
         {{ dbt_utils.generate_surrogate_key([
