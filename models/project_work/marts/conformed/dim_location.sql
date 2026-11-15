@@ -22,7 +22,7 @@ all_locations AS (
     FROM stg_311
     WHERE borough IS NOT NULL
        OR council_district IS NOT NULL
-       OR zipcode IS NOT NULL
+       OR zip IS NOT NULL
 
     UNION DISTINCT
 
@@ -31,7 +31,7 @@ all_locations AS (
     FROM stg_litigation
     WHERE borough IS NOT NULL
        OR council_district IS NOT NULL
-       OR zipcode IS NOT NULL
+       OR zip IS NOT NULL
 
 ),
 
