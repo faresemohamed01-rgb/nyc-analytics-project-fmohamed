@@ -39,7 +39,8 @@ location_dimension AS (
 
     SELECT
         {{ dbt_utils.generate_surrogate_key([
-            'borough', 'council_district', 'zip'
+            'borough', 'council_district', 'zip', 'incident_address',
+            'bbl', 'community_board', 'latitude', 'longitude'
         ]) }} AS location_key,
 
         borough, 
