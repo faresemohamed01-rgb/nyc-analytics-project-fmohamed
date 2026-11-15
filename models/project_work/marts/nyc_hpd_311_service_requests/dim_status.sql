@@ -9,7 +9,7 @@ distinct_status AS (
     SELECT DISTINCT
     status, service_request_id
     FROM stg_311
-    WHERE service_request_id IS NOT NULL
+    WHERE service_request_id IS NOT NULL AND status = 'CLOSED'
 
 ),
 
