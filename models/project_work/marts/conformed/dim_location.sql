@@ -62,4 +62,3 @@ null_placeholder AS (
 SELECT * FROM location_dimension
 UNION ALL
 SELECT * FROM null_placeholder
-)
