@@ -19,7 +19,6 @@ all_locations AS (
 
     SELECT DISTINCT
         borough, council_district, zip,
-        longitude
     FROM stg_311
     WHERE borough IS NOT NULL
        OR council_district IS NOT NULL
