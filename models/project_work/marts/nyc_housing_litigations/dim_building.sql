@@ -1,15 +1,14 @@
+--building_info for the litigation data
+
 WITH stg_litigation AS (
-
-    SELECT *
-    FROM {{ ref('stg_nyc_housing_litigations') }}
-
+    SELECT * FROM {{ ref('stg_nyc_housing_litigations') }}
 ),
 
-distinct_buildings AS (
+distinct_building AS (
 
     SELECT DISTINCT
-    building_id, streetname, zip
-    FROM stg_311
+    building_id, street_name, incident_address, zip
+    FROM stg_litigation
     WHERE building_id IS NOT NULL
 
 ),
@@ -17,22 +16,11 @@ distinct_buildings AS (
 enriched AS (
 
     SELECT
-        building_id, 
-        zip
+        building_id, street_name, zip,
 
-        -- Derived category, based on keywords appearing in descriptor
-        -- Order matters due to CASE WHEN structure (worth considering)
-        -- Match is case insensitive
+        EXTRACT(incident_address, r'\d+')) AS house_number
 
-        CASE
-            WHEN LOWER(descriptor) LIKE '%sidewalk%' THEN 'sidewalk'
-            WHEN LOWER(descriptor) LIKE '%street%'   THEN 'street'
-            WHEN LOWER(descriptor) LIKE '%bike%'     THEN 'bike'
-            WHEN LOWER(descriptor) LIKE '%highway%'  THEN 'highway'
-            ELSE 'other'
-        END AS complaint_category
-
-    FROM distinct_complaint_types
+    FROM distinct_building
 
 ),
 
@@ -41,14 +29,12 @@ dim_complaint_type AS (
     SELECT
         {{ dbt_utils.generate_surrogate_key([
             'building_id', 'streetname', 'zip'
-        ]) }} AS buidling_key,
+        ]) }} AS building_key,
 
-        complaint_type,
-        descriptor,
-        complaint_category
+        building_id, street_name, zip, house_number
 
     FROM enriched
 
 )
 
-SELECT * FROM dim_complaint_type
+SELECT * FROM dim_building
