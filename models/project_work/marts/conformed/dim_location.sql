@@ -18,20 +18,20 @@ stg_litigation AS (
 all_locations AS (
 
     SELECT DISTINCT
-        borough, council_district, zip
+        boro_name, council_district, incident_zip
     FROM stg_311
-    WHERE borough IS NOT NULL
+    WHERE boro_name IS NOT NULL
        OR council_district IS NOT NULL
-       OR zip IS NOT NULL
+       OR incident_zip IS NOT NULL
 
     UNION DISTINCT
 
     SELECT DISTINCT
-        borough, council_district, zip
+        boro_name, council_district, incident_zip
     FROM stg_litigation
-    WHERE borough IS NOT NULL
+    WHERE boro_name IS NOT NULL
        OR council_district IS NOT NULL
-       OR zip IS NOT NULL
+       OR incident_zip IS NOT NULL
 
 ),
 
@@ -39,12 +39,14 @@ location_dimension AS (
 
     SELECT
         {{ dbt_utils.generate_surrogate_key([
-            'borough', 'council_district', 'zip'
+            'boro_name', 'council_district', 'incident_zip'
         ]) }} AS location_key,
 
-        borough,
-        council_district,
-        zip
+        incident_address,
+        bbl,
+        community_board, 
+        latitude, 
+        longitude
 
     FROM all_locations
 
@@ -56,9 +58,14 @@ null_placeholder AS (
 
     SELECT
         '-1' AS location_key,
-        CAST(NULL AS STRING) AS borough,
+        CAST(NULL AS STRING) AS boro_name,
         CAST(NULL AS STRING) AS council_district,
-        CAST(NULL AS STRING) AS zip
+        CAST(NULL AS STRING) AS incident_zip, 
+        CAST(NULL AS STRING) AS incident_address,
+        CAST(NULL AS STRING) AS bbl,
+        CAST(NULL AS STRING) AS community_board, 
+        CAST(NULL AS FLOAT) AS latitude, 
+        CAST(NULL AS STRING) AS longitude, 
 
 )
 
