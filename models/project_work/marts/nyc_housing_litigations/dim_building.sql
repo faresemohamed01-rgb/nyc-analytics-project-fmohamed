@@ -26,7 +26,7 @@ dim_complaint_type AS (
 
     SELECT
         {{ dbt_utils.generate_surrogate_key([
-            'building_id', 'street_name', 'zip', 'housenumber'
+            'buildingid', 'streetname', 'zip', 'housenumber'
         ]) }} AS building_key,
 
         buildingid, streetname, zip, housenumber
