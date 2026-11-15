@@ -17,7 +17,7 @@ enriched AS (
 
     SELECT
         building_id, street_name, zip, 
-        regexp_extract('incident address' , r'\d+') AS house_number
+        regexp_extract('incident_address' , r'\d+') AS house_number
 
     FROM distinct_building
 
