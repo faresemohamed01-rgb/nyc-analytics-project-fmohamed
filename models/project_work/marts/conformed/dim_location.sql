@@ -72,8 +72,8 @@ null_placeholder AS (
         CAST(NULL AS STRING) AS incident_address,
         CAST(NULL AS STRING) AS bbl,
         CAST(NULL AS STRING) AS community_board, 
-        CAST(NULL AS FLOAT) AS latitude, 
-        CAST(NULL AS STRING) AS longitude, 
+        CAST(NULL AS DECIMAL) AS latitude, 
+        CAST(NULL AS DECIMAL) AS longitude, 
 
 )
 
