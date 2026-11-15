@@ -33,7 +33,7 @@ all_locations AS (
     SELECT DISTINCT
         borough, council_district, zip, incident_address,
         bbl,
-        community_board, 
+        community_district as community_board, 
         latitude, 
         longitude
     FROM stg_litigation
