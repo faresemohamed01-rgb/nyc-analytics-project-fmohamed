@@ -7,9 +7,9 @@ WITH stg_311 AS (
 distinct_status AS (
 
     SELECT DISTINCT
-    status, service_request_id
+    status
     FROM stg_311
-    WHERE service_request_id IS NOT NULL AND status = 'CLOSED'
+    WHERE status IS NOT NULL
 
 ),
 
@@ -17,10 +17,11 @@ enriched AS (
 
     SELECT
         status, 
-        service_request_id,
         
         CASE
             WHEN status LIKE '%CLOSED%' THEN 'TRUE'
+            WHEN status LIKE '%OPEN%' THEN 'FALSE'
+            ELSE 'other'
         END AS is_closed
 
     FROM distinct_status
@@ -31,10 +32,10 @@ dim_status AS (
 
     SELECT
         {{ dbt_utils.generate_surrogate_key([
-            'status', 'service_request_id','is_closed'
+            'status', 'is_closed'
         ]) }} AS status_key,
 
-        status, is_closed, service_request_id
+        status, is_closed
 
     FROM enriched
 
