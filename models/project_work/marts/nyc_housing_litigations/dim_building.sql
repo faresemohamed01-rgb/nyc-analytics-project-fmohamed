@@ -36,4 +36,4 @@ dim_complaint_type AS (
 
 )
 
-SELECT * FROM dim_buildings
+SELECT * FROM dim_building
