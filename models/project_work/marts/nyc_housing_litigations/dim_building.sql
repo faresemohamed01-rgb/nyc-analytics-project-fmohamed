@@ -7,7 +7,7 @@ WITH stg_litigation AS (
 distinct_building AS (
 
     SELECT DISTINCT
-    building_id, street_name, zip, incident_address
+    building_id, incident_address as street_name, zip, incident_address
     FROM stg_litigation
     WHERE building_id IS NOT NULL
 
