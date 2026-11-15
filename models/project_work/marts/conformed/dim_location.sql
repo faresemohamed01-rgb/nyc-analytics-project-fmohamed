@@ -28,7 +28,7 @@ all_locations AS (
 
     SELECT DISTINCT
         borough, council_district, zip
-    FROM stg_dob
+    FROM stg_litigation
     WHERE borough IS NOT NULL
        OR council_district IS NOT NULL
        OR zipcode IS NOT NULL
