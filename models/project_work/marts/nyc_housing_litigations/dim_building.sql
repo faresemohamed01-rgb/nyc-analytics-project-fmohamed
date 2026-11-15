@@ -7,7 +7,7 @@ WITH stg_litigation AS (
 distinct_building AS (
 
     SELECT DISTINCT
-    building_id, incident_address as street_name, zip, incident_address
+    building_id as buildingid, street_name as streetname, zip, incident_address as housenumber
     FROM stg_litigation
     WHERE building_id IS NOT NULL
 
@@ -16,8 +16,7 @@ distinct_building AS (
 enriched AS (
 
     SELECT
-        building_id, street_name, zip, 
-        regexp_extract(incident_address , r'\d+') AS house_number
+        buildingid, streetname, zip, housenumber
 
     FROM distinct_building
 
@@ -27,10 +26,10 @@ dim_complaint_type AS (
 
     SELECT
         {{ dbt_utils.generate_surrogate_key([
-            'building_id', 'street_name', 'zip'
+            'building_id', 'street_name', 'zip', 'housenumber'
         ]) }} AS building_key,
 
-        building_id, street_name, zip, house_number
+        buildingid, streetname, zip, housenumber
 
     FROM enriched
 
