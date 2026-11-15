@@ -1,3 +1,6 @@
+-- Location dimension shared by NYC HPD 311 Service Requests
+-- and NYC Housing Litigations
+
 WITH stg_311 AS (
 
     SELECT *
@@ -15,7 +18,7 @@ stg_litigation AS (
 all_locations AS (
 
     SELECT DISTINCT
-        borough, council_district, zipcode
+        borough, council_district, zip
     FROM stg_311
     WHERE borough IS NOT NULL
        OR council_district IS NOT NULL
@@ -24,7 +27,7 @@ all_locations AS (
     UNION DISTINCT
 
     SELECT DISTINCT
-        borough, council_district, zipcode
+        borough, council_district, zip
     FROM stg_dob
     WHERE borough IS NOT NULL
        OR council_district IS NOT NULL
@@ -36,12 +39,12 @@ location_dimension AS (
 
     SELECT
         {{ dbt_utils.generate_surrogate_key([
-            'borough', 'council_district', 'zipcode'
+            'borough', 'council_district', 'zip'
         ]) }} AS location_key,
 
         borough,
         council_district,
-        zipcode
+        zip
 
     FROM all_locations
 
@@ -55,7 +58,7 @@ null_placeholder AS (
         '-1' AS location_key,
         CAST(NULL AS STRING) AS borough,
         CAST(NULL AS STRING) AS council_district,
-        CAST(NULL AS STRING) AS zipcode
+        CAST(NULL AS STRING) AS zip
 
 )
 
