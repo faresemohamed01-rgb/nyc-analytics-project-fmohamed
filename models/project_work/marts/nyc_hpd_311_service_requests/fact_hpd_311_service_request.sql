@@ -1,39 +1,71 @@
 --fact table for hpd 311 service request
+--status info for nyc hpd 311 service request
 
 WITH stg_311 AS (
     SELECT * FROM {{ ref('stg_nyc_hpd_311_service_requests') }}
+
 ),
 
-distinct_building AS (
+dim_channel AS (
+    SELECT channel_key FROM {{ ref('dim_channel') }}
+),
 
-    SELECT DISTINCT
-    building_id as buildingid, street_name as streetname, zip, incident_address
-    FROM stg_litigation
-    WHERE building_id IS NOT NULL
+dim_date AS (
+    SELECT date_key FROM {{ ref('dim_date') }}
+),
+
+dim_location AS (
+    SELECT location_key FROM {{ ref('dim_location') }}
+),
+
+dim_problem AS (
+    SELECT problem_key FROM {{ ref('dim_problem') }}
+),
+
+dim_status AS (
+    SELECT status_key FROM {{ ref('dim_status') }}
+),
+
+dim_time AS (
+    SELECT time_key FROM {{ ref('dim_time') }}
+),
+
+
+fact_311_hpd_services AS (
+
+    SELECT
+    channel_key 
+    FROM dim_channel
 
 ),
 
 enriched AS (
 
     SELECT
-        buildingid, streetname, zip, 
-        REGEXP_EXTRACT(incident_address, r'^\S*\d+') AS housenumber
+        status, 
+        
+        CASE
+            WHEN status LIKE '%CLOSED%' THEN 'TRUE'
+            WHEN status LIKE '%OPEN%' THEN 'FALSE'
+            ELSE 'other'
+        END AS is_closed
 
-    FROM distinct_building
+    FROM distinct_status
 
 ),
 
-dim_building AS (
+dim_status AS (
 
     SELECT
         {{ dbt_utils.generate_surrogate_key([
-            'buildingid', 'streetname', 'zip', 'housenumber'
-        ]) }} AS building_key,
+            'status', 'is_closed'
+        ]) }} AS status_key,
 
-        buildingid, streetname, zip, housenumber
+        status, is_closed
 
     FROM enriched
 
 )
 
-SELECT * FROM dim_building
+SELECT * FROM dim_status
+
