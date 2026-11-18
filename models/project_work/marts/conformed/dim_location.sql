@@ -1,76 +1,44 @@
--- Location dimension shared by NYC HPD 311 Service Requests
--- and NYC Housing Litigations
+-- Shared location dimension.
+-- Grain: one row per distinct borough, council district, and ZIP.
 
-WITH stg_311 AS (
-
-    SELECT *
+WITH all_locations AS (
+    SELECT
+        borough,
+        council_district,
+        zip
     FROM {{ ref('stg_nyc_hpd_311_service_requests') }}
-
-),
-
-stg_litigation AS (
-
-    SELECT *
-    FROM {{ ref('stg_nyc_housing_litigations') }}
-
-),
-
-all_locations AS (
-
-    SELECT DISTINCT
-        borough, council_district, zip, incident_address, bbl, community_board, latitude, longitude
-    FROM stg_311
-    WHERE borough IS NOT NULL
-       OR council_district IS NOT NULL
-       OR zip IS NOT NULL
 
     UNION DISTINCT
 
-    SELECT DISTINCT
-         borough, council_district, zip, street_name, bbl, community_district AS community_board, latitude, longitude
-    FROM stg_litigation
-    WHERE borough IS NOT NULL
-       OR council_district IS NOT NULL
-       OR zip IS NOT NULL
-
+    SELECT
+        borough,
+        council_district,
+        zip
+    FROM {{ ref('stg_nyc_housing_litigations') }}
 ),
 
 location_dimension AS (
-
     SELECT
         {{ dbt_utils.generate_surrogate_key([
-            'borough', 'council_district', 'zip', 'incident_address',
-            'bbl', 'community_board', 'latitude', 'longitude'
+            'borough',
+            'council_district',
+            'zip'
         ]) }} AS location_key,
-
-        borough, 
-        council_district, 
-        zip, 
-        incident_address,
-        bbl,
-        community_board, 
-        latitude, 
-        longitude
-
+        borough,
+        council_district,
+        zip
     FROM all_locations
-
+    WHERE borough IS NOT NULL
+       OR council_district IS NOT NULL
+       OR zip IS NOT NULL
 ),
 
--- Null placeholder row to handle NULL values.
-
 null_placeholder AS (
-
     SELECT
         '-1' AS location_key,
         CAST(NULL AS STRING) AS borough,
         CAST(NULL AS STRING) AS council_district,
-        CAST(NULL AS STRING) AS zip, 
-        CAST(NULL AS STRING) AS incident_address,
-        CAST(NULL AS STRING) AS bbl,
-        CAST(NULL AS STRING) AS community_board, 
-        CAST(NULL AS DECIMAL) AS latitude, 
-        CAST(NULL AS DECIMAL) AS longitude, 
-
+        CAST(NULL AS STRING) AS zip
 )
 
 SELECT * FROM location_dimension
