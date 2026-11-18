@@ -34,38 +34,15 @@ dim_time AS (
 fact_311_hpd_services AS (
 
     SELECT
-    channel_key 
+    c.channel_key,
+    p.problem_key,
+    s.status_key, 
+    COALESCE(l.location_key, '-1') AS location_key,
+    COALESCE(open_d.date_key, -1) AS caseopendate_key,
+    COALESCE(finding_d.date_key, -1) AS findingdate_key,
     FROM dim_channel
 
 ),
 
-enriched AS (
-
-    SELECT
-        status, 
-        
-        CASE
-            WHEN status LIKE '%CLOSED%' THEN 'TRUE'
-            WHEN status LIKE '%OPEN%' THEN 'FALSE'
-            ELSE 'other'
-        END AS is_closed
-
-    FROM distinct_status
-
-),
-
-dim_status AS (
-
-    SELECT
-        {{ dbt_utils.generate_surrogate_key([
-            'status', 'is_closed'
-        ]) }} AS status_key,
-
-        status, is_closed
-
-    FROM enriched
-
-)
-
-SELECT * FROM dim_status
+SELECT * FROM fact_hpd_311_service_request
 
