@@ -1,3 +1,4 @@
+
 -- Time dimension shared by HPD 311 service requests
 -- Used for created and closed time in fact_311_housing_request
 
