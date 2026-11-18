@@ -1,44 +1,24 @@
---status info for nyc hpd 311 service request
+-- One row per distinct HPD 311 request status.
 
-WITH stg_311 AS (
-    SELECT * FROM {{ ref('stg_nyc_hpd_311_service_requests') }}
-),
-
-distinct_status AS (
-
-    SELECT DISTINCT
-    status
-    FROM stg_311
+WITH distinct_status AS (
+    SELECT DISTINCT status
+    FROM {{ ref('stg_nyc_hpd_311_service_requests') }}
     WHERE status IS NOT NULL
-
 ),
 
 enriched AS (
-
     SELECT
-        status, 
-        
+        status,
         CASE
-            WHEN status LIKE '%CLOSED%' THEN 'TRUE'
-            WHEN status LIKE '%OPEN%' THEN 'FALSE'
-            ELSE 'other'
+            WHEN status = 'CLOSED' THEN TRUE
+            WHEN status IN ('OPEN', 'REOPENED') THEN FALSE
+            ELSE CAST(NULL AS BOOL)
         END AS is_closed
-
     FROM distinct_status
-
-),
-
-dim_status AS (
-
-    SELECT
-        {{ dbt_utils.generate_surrogate_key([
-            'status', 'is_closed'
-        ]) }} AS status_key,
-
-        status, is_closed
-
-    FROM enriched
-
 )
 
-SELECT * FROM dim_status
+SELECT
+    {{ dbt_utils.generate_surrogate_key(['status']) }} AS status_key,
+    status,
+    is_closed
+FROM enriched
